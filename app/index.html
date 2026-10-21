@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Kwaku Online Store</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f3f6fb; color: #1d2a3a; }
+    nav { display: flex; justify-content: space-between; align-items: center; padding: 14px 32px;
+          background: #0b2a5b; color: #fff; }
+    nav .brand { font-weight: 700; font-size: 20px; }
+    .hero { padding: 48px 32px; background: linear-gradient(120deg, #0b2a5b 0%, #1356c4 100%); color: #fff; }
+    .hero h1 { font-size: 40px; margin: 0 0 10px; }
+    .hero p { font-size: 18px; margin: 0 0 20px; color: #d6e4ff; }
+    .badge { display: inline-block; margin-right: 10px; padding: 6px 14px; border-radius: 999px;
+             background: rgba(255, 255, 255, .18); font-weight: 600; font-size: 14px; }
+    main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+    h2 { color: #0b2a5b; }
+    .products { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 22px; }
+    .card { background: #fff; border-radius: 14px; padding: 20px; text-align: center;
+            box-shadow: 0 6px 18px rgba(11, 42, 91, .08); }
+    .card .icon { font-size: 60px; }
+    .card h3 { margin: 10px 0 4px; }
+    .price { color: #1356c4; font-weight: 700; font-size: 20px; }
+    .card a { display: block; margin-top: 12px; background: #1356c4; color: #fff; padding: 10px;
+              border-radius: 8px; text-decoration: none; font-weight: 600; }
+    .k8s { margin-top: 32px; background: #fff; border-left: 6px solid #326ce5; border-radius: 10px;
+           padding: 16px 20px; box-shadow: 0 6px 18px rgba(11, 42, 91, .06); }
+    .k8s code { background: #eef3ff; padding: 2px 8px; border-radius: 4px; }
+    /* release banner: hidden in 1.0, shown from version 2.0 (proves which version a pod is running) */
+    .promo { display: none; background: #ffd23f; color: #0b2a5b; text-align: center; font-weight: 700; padding: 12px 16px; }
+    .promo:not([data-version="1.0"]) { display: block; }
+    footer { text-align: center; color: #5b6b80; font-size: 13px; padding: 24px 16px; }
+  </style>
+</head>
+<body>
+  <nav><span class="brand">🛍️ Kwaku Online Store</span><span>☸️ Running on Kubernetes</span></nav>
+
+  <div class="promo" data-version="__APP_VERSION__">🚚 New in version __APP_VERSION__: free next-day delivery on all orders!</div>
+
+  <section class="hero">
+    <h1>Welcome to Kwaku Online Store</h1>
+    <p>Quality Products. Great Prices. Fast Delivery.</p>
+    <span class="badge">Version __APP_VERSION__</span>
+    <span class="badge">Amazon EKS</span>
+  </section>
+
+  <main>
+    <h2>Featured Products</h2>
+    <div class="products">
+      <div class="card"><div class="icon">💻</div><h3>Laptop</h3><div class="price">£699</div><a href="#">Add to cart</a></div>
+      <div class="card"><div class="icon">📱</div><h3>Smartphone</h3><div class="price">£499</div><a href="#">Add to cart</a></div>
+      <div class="card"><div class="icon">🎧</div><h3>Headphones</h3><div class="price">£89</div><a href="#">Add to cart</a></div>
+      <div class="card"><div class="icon">👟</div><h3>Sports Shoes</h3><div class="price">£59</div><a href="#">Add to cart</a></div>
+    </div>
+
+    <div class="k8s">
+      <strong>Served by pod</strong> <code>__POD_NAME__</code> · started <code>__STARTED__</code><br>
+      Refresh the page: the load balancer spreads customers across all running pods.
+    </div>
+  </main>
+
+  <footer>Demonstration store for a Kubernetes project: no real orders or payments are processed.</footer>
+</body>
+</html>

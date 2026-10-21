@@ -1,0 +1,12 @@
+# Pod Disruption Budget: during planned maintenance (node replacement, upgrades),
+# Kubernetes keeps at least 2 store pods running.
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: kwaku-store
+  namespace: kwaku-store
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app: kwaku-store

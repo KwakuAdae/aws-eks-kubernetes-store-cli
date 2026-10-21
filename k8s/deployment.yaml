@@ -1,0 +1,71 @@
+# The website: 3 identical pods spread over different nodes/AZs.
+# Kubernetes keeps 3 running at all times (self-healing) and replaces them one by one on updates.
+# __IMAGE__ and __VERSION__ are filled in by scripts/07-deploy-website.sh.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kwaku-store
+  namespace: kwaku-store
+  labels:
+    app: kwaku-store
+  annotations:
+    kubernetes.io/change-cause: "deploy version __VERSION__"   # shown by kubectl rollout history
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5          # keep old versions so we can roll back
+  selector:
+    matchLabels:
+      app: kwaku-store
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0            # never fewer than 3 serving pods during an update
+      maxSurge: 1                  # start 1 new pod at a time
+  template:
+    metadata:
+      labels:
+        app: kwaku-store
+    spec:
+      terminationGracePeriodSeconds: 30
+      # Spread the pods across Availability Zones, so one AZ failing does not take the store down
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: topology.kubernetes.io/zone
+          whenUnsatisfiable: ScheduleAnyway
+          labelSelector:
+            matchLabels:
+              app: kwaku-store
+      containers:
+        - name: web
+          image: __IMAGE__
+          ports:
+            - containerPort: 80
+          env:
+            - name: POD_NAME             # shown on the page: which pod served this request?
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          resources:
+            requests:                    # what the scheduler reserves (and what the HPA measures against)
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          readinessProbe:                # only send customers to pods that are ready
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:                 # restart a container that stops answering
+            httpGet:
+              path: /health
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          lifecycle:
+            preStop:                     # keep serving for 10s while the load balancer stops sending traffic here
+              exec:
+                command: ["sleep", "10"]

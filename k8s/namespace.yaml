@@ -1,0 +1,7 @@
+# A namespace keeps all of the store's Kubernetes objects together.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: kwaku-store
+  labels:
+    app.kubernetes.io/part-of: kwaku-online-store
